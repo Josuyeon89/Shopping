@@ -4,16 +4,22 @@ package com.kt.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    String loginId;
-    String password;
-    String name;
-    LocalDate birthday;
+    private Long id;
+    private String loginId;
+    private String password;
+    private String name;
+    private String email;
+    private String mobile;
+    private Gender gender;
+    private LocalDate birthday;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }
