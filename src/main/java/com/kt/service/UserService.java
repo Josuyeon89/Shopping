@@ -6,6 +6,7 @@ import com.kt.dto.UserCreateRequest;
 import com.kt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 
@@ -30,4 +31,9 @@ public class UserService {
 
         userRepository.save(newUser);   // repository로 넘김
     }
+
+    public User getUser(@PathVariable Integer id) {
+        return null;
+    }
 }
+
