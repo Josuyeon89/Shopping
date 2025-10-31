@@ -24,7 +24,9 @@ public class UserRepository {
                 user.getBirthday(),
                 user.getEmail(),
                 user.getMobile(),
-                user.getGender()
+                user.getGender(),
+                java.sql.Timestamp.valueOf(user.getCreateTime()),      // LocalDateTime → Timestamp
+                java.sql.Timestamp.valueOf(user.getUpdateTime())
         );
     }
 
