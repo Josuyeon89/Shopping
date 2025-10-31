@@ -15,7 +15,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     public void create(UserCreateRequest request) {
-        System.out.println(request.toString());
         var newUser = new User(
                 userRepository.selectMaxId() +1,
                 request.loginId(),

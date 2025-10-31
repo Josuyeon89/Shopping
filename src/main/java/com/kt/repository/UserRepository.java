@@ -15,18 +15,32 @@ public class UserRepository {
 
     public void save(User user) {
         // 서비스에서 dto를 도메인(비지니스모델)으로 바꾼다음 전달
-        var sql = "INSERT INTO MEMBER (id, loginId, password, name, birthday, email, mobile, gender, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        var sql = """
+			INSERT INTO MEMBER (
+			                    id,
+			                    loginId, 
+			                    password, 
+			                    name, 
+			                    birthday,
+			                    mobile,
+			                    email,
+			                    gender,
+			                    createdAt,
+			                    updatedAt
+			                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			""";
 
-        jdbcTemplate.update(sql, user.getId(),
+        jdbcTemplate.update(sql,
+                user.getId(),
                 user.getLoginId(),
                 user.getPassword(),
                 user.getName(),
                 user.getBirthday(),
-                user.getEmail(),
                 user.getMobile(),
-                user.getGender(),
-                java.sql.Timestamp.valueOf(user.getCreateTime()),      // LocalDateTime → Timestamp
-                java.sql.Timestamp.valueOf(user.getUpdateTime())
+                user.getEmail(),
+                user.getGender().name(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
         );
     }
 

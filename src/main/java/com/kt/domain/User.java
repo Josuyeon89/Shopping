@@ -20,6 +20,6 @@ public class User {
     private String mobile;
     private Gender gender;
     private LocalDate birthday;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
