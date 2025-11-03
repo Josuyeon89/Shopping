@@ -1,8 +1,11 @@
 package com.kt.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +23,11 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "유저", description = "유저 관련 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
+@ApiResponses(value = {
+	@ApiResponse(responseCode = "400", description = "유효성 검사 실패"),
+	@ApiResponse(responseCode = "500", description = "서버 에러 - 백엔드에 바로 문의 바랍니다.")
+})
 public class UserController {
 	// userservice를 di받아야함
 	// di받는 방식이 생성자주입 씀 -> 재할당을 금지함
@@ -35,16 +43,23 @@ public class UserController {
 	// 1번이랑 정반대
 	// 장점 : 프로덕션 코드에 침범이 없다, 신뢰할 수 있음
 	// 단점 : UI가 안이쁘다. 그리고 문서작성하는데 테스트코드 기반이라 시간이 걸림.
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "400", description = "유효성 검사 실패"),
-		@ApiResponse(responseCode = "500", description = "서버 에러 - 백엔드에 바로 문의 바랍니다.")
-	})
-	@PostMapping("/users")
+
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	// loginId, password, name, birthday
 	// json형태의 body에 담겨서 post요청으로 /users로 들어오면
 	// @RequestBody를보고 jacksonObjectMapper가 동작해서 json을 읽어서 dto로 변환
 	public void create(@Valid @RequestBody UserCreateRequest request) {
 		userService.create(request);
+	}
+
+	// /users/duplicate-login-id?loginId=ktuser
+	// IllegalArgumentException 발생 시 400에러
+	// GET에서 쓰는 queryString
+	// @RequestParam의 속성은 기본이 required = true
+	@GetMapping("/duplicate-login-id")
+	@ResponseStatus(HttpStatus.OK)
+	public Boolean isDuplicateLoginId(@RequestParam String loginId) {
+		return userService.isDuplicateLoginId(loginId);
 	}
 }
