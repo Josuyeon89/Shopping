@@ -32,6 +32,10 @@ public class UserService {
         userRepository.save(newUser);   // repository로 넘김
     }
 
+    public boolean isDuplicateLoginId(String loginId) {
+        return userRepository.existsByLoginId(loginId);
+    }
+
     public User getUser(@PathVariable Integer id) {
         return null;
     }

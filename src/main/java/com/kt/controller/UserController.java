@@ -34,12 +34,19 @@ public class UserController {
         userService.create(userCreateRequest);
     }
 
-    @GetMapping("/users")
-    @ResponseStatus(HttpStatus.OK)
-    public List<User> getUser(@PathVariable Integer id) {
-        User user = userService.getUser(id);
-        //이어서 작성해야함
-        return null;
-    }
+//    @GetMapping("/users")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<User> getUser(@PathVariable Integer id) {
+//        User user = userService.getUser(id);
+//        //이어서 작성해야함
+//        return null;
+//    }
 
+    // 아이디 중복 체크
+    // IllegalArgumentException 발생 시 400 에러
+     @GetMapping("/duplicate-login-id")
+    	@ResponseStatus(HttpStatus.OK)
+    	public Boolean isDuplicateLoginId(@RequestParam String loginId) {
+    		return userService.isDuplicateLoginId(loginId);
+    	}
 }
