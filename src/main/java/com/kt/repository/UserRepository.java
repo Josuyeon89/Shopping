@@ -117,9 +117,9 @@ public class UserRepository {
 	}
 
 	public void updateById(Long id, String name, String email, String mobile) {
-		var sql = "UPDATE MEMBER SET name = ?, email = ?, mobile = ? WHERE id = ?";
+		var sql = "UPDATE MEMBER SET name = ?, email = ?, mobile = ?, updatedAt = ? WHERE id = ?";
 
-		jdbcTemplate.update(sql, name, email, mobile, id);
+		jdbcTemplate.update(sql, name, email, mobile, LocalDateTime.now(), id);
 	}
 
 	private RowMapper<User> rowMapper() {
