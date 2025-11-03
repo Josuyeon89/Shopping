@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kt.domain.Gender;
 import com.kt.domain.User;
+import com.kt.dto.CustomPage;
 import com.kt.dto.UserCreateRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -94,6 +96,29 @@ public class UserRepository {
 		var list = jdbcTemplate.query(sql, rowMapper(), id);
 
 		return list.stream().findFirst();
+	}
+
+	public CustomPage selectAll(int page, int size) {
+		// paging의 구조
+		// 백엔드 입장에서 필요한 것
+		// 한화면에 몇개 보여줄것인가? => limit
+		// 내가 몇번째 페이지를 보고있나? => offset (몇개를 건너뛸것인가?)
+		// 보고있는 페이지 - 1 * limit
+		var sql = "SELECT * FROM MEMBER LIMIT ? OFFSET ?";
+
+		var users = jdbcTemplate.query(sql, rowMapper(), page, size);
+
+		var countSql = "SELECT COUNT(*) FROM MEMBER";
+		var totalElements = jdbcTemplate.queryForObject(countSql, Long.class);
+		var pages = (int) Math.ceil((double) totalElements / size);
+
+		return new CustomPage(
+			users,
+			size,
+			page,
+			pages,
+			totalElements
+		);
 	}
 
 	private RowMapper<User> rowMapper() {
