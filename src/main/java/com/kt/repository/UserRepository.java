@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.kt.domain.User;
+import com.kt.domain.user.User;
 
 // <T, ID>
 // T: Entity 클래스 => User
