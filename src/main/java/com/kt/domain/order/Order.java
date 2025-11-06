@@ -6,13 +6,11 @@ import java.util.List;
 
 import com.kt.common.BaseEntity;
 import com.kt.domain.orderproduct.OrderProduct;
-import com.kt.domain.product.Product;
 import com.kt.domain.user.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;

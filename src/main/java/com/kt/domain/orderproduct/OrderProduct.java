@@ -1,8 +1,5 @@
 package com.kt.domain.orderproduct;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.kt.common.BaseEntity;
 import com.kt.domain.order.Order;
 import com.kt.domain.product.Product;
@@ -10,8 +7,6 @@ import com.kt.domain.product.Product;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 
 @Entity
