@@ -2,14 +2,13 @@ package com.kt.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.domain.User;
-import com.kt.dto.CustomPage;
 import com.kt.dto.UserCreateRequest;
-import com.kt.repository.UserJDBCRepository;
 import com.kt.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
-	private final UserJDBCRepository userJDBCRepository;
+	// private final UserJDBCRepository userJDBCRepository; 추억속으로
 	private final UserRepository userRepository;
 
 	// 트랜잭션 처리해줘
@@ -60,17 +59,8 @@ public class UserService {
 	}
 
 	// Pageable 인터페이스
-	public CustomPage search(int page, int size, String keyword) {
-		var pair = userJDBCRepository.selectAll(page - 1, size, keyword);
-		var pages = (int) Math.ceil((double) pair.getSecond() / size);
-
-		return new CustomPage(
-			pair.getFirst(),
-			size,
-			page,
-			pages,
-			pair.getSecond()
-		);
+	public Page<User> search(Pageable pageable, String keyword) {
+		return userRepository.findAllByNameContaining(keyword, pageable);
 	}
 
 	public User detail(Long id) {
@@ -83,5 +73,12 @@ public class UserService {
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
 		user.update(name, email, mobile);
+	}
+
+	public void delete(Long id) {
+		userRepository.deleteById(id);
+		// 삭제에는 두가지 개념 - softdelete, harddelete
+		// var user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+		// userRepository.delete(user);
 	}
 }

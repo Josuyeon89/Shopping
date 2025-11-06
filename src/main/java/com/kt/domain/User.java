@@ -3,10 +3,14 @@ package com.kt.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +29,9 @@ public class User {
 	private String name;
 	private String email;
 	private String mobile;
+	// ordinal : enum의 순서를 DB에 저장 => 절대 사용하지마세욤
+	// string : enum의 값 DB에 저장
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	private LocalDate birthday;
 	private LocalDateTime createdAt;

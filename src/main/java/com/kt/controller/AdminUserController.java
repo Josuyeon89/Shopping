@@ -1,5 +1,7 @@
 package com.kt.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,12 +31,16 @@ public class AdminUserController {
 	// 이름에
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public CustomPage search(
+	public Page<User> search(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(required = false) String keyword
 	) {
-		return userService.search(page, size, keyword);
+
+		// pageable -> interface -> 구현체 : PageRequest
+		// 인터페이스가 존재하면 반드시 구현체(클래스)가 있다고 약속이 되어있다.
+
+		return userService.search(PageRequest.of(page - 1, size), keyword);
 
 	}
 	// 유저 상세 조회
