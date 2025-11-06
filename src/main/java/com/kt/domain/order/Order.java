@@ -39,6 +39,9 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@OneToMany(mappedBy = "order")
+	private List<OrderProduct> orderProducts = new ArrayList<>();
+
 	//하나의 오더는 여러개의 상품을 가질수있음
 	// 1:N
 	//하나의 상품은 여러개의 오더를 가질수있음

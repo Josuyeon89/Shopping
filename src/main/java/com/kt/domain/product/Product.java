@@ -14,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 
@@ -25,6 +27,9 @@ public class Product extends BaseEntity {
 	private Long stock;
 	@Enumerated(EnumType.STRING)
 	private ProductStatus status;
+
+	@OneToMany(mappedBy = "product")
+	private List<OrderProduct> orderProducts = new ArrayList<>();
 
 	//생성
 	//수정
