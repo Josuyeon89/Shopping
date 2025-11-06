@@ -1,145 +1,25 @@
 package com.kt.repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import org.springframework.data.util.Pair;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
-
-import com.kt.domain.Gender;
 import com.kt.domain.User;
-import com.kt.dto.CustomPage;
-import com.kt.dto.UserCreateRequest;
 
-import lombok.RequiredArgsConstructor;
+// <T, ID>
+// T: Entity 클래스 => User
+// ID: Entity 클래스의 PK 타입 => Long
+public interface UserRepository extends JpaRepository<User, Long> {
+	//여기에 쿼리를 작성해줘야
+	// JPA에서는 쿼리를 작성하는 3가지 방법이 존재
+	// 1. 네이티브 쿼리 작성 (3)
+	// 2. JPQL 작성 -> 네이티브 쿼리랑 같은데 Entity 기반 (2) - 너무길어진 메소드이름을 그냥 쿼리작성해서 숨김
+	// 3. querymethod 작성 -> 메서드 이름을 쿼리 처럼 작성 (1) - 길어지면 상당히 이상해보임
+	// 찾는다 : findByXX , 존재하냐? existsByXX, 삭제 : deleteByXX
 
-@Repository
-@RequiredArgsConstructor
-public class UserRepository {
-	private final JdbcTemplate jdbcTemplate;
+	Boolean existsByLoginId(String loginId);
 
-	public void save(User user) {
-		var sql = """
-			INSERT INTO MEMBER (
-			                    id,
-			                    loginId, 
-			                    password, 
-			                    name, 
-			                    birthday,
-			                    mobile,
-			                    email,
-			                    gender,
-			                    createdAt,
-			                    updatedAt
-			                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-			""";
-
-		jdbcTemplate.update(
-			sql,
-			user.getId(),
-			user.getLoginId(),
-			user.getPassword(),
-			user.getName(),
-			user.getBirthday(),
-			user.getMobile(),
-			user.getEmail(),
-			user.getGender().name(),
-			user.getCreatedAt(),
-			user.getUpdatedAt()
-		);
-	}
-
-	public Long selectMaxId() {
-		var sql = "SELECT MAX(id) FROM MEMBER";
-
-		var maxId = jdbcTemplate.queryForObject(sql, Long.class);
-
-		return maxId == null ? 0L : maxId;
-	}
-
-	// 크게 세가지 정도 아이디 중복 체크 방법
-	// 1. count해서 0보다 큰지 체크 -> 전 별로 좋아보이진않음
-	// db에 만약 유저가 3000만명 -> 1번 중복체크할때마다 3천개의 데이터를 모두 살펴봐야함(full-scan)
-	// 2. unique 제약조건 걸어서 예외 처리 -> 유니크키에러 (DataViolation Exception)별로 좋아보이진 않음
-	// 3. exists로 존재 여부 체크 -> boolean으로 값 존재 여부를 바로 알 수 있음
-	public boolean existsByLoginId(String loginId) {
-		var sql = "SELECT EXISTS (SELECT id FROM MEMBER WHERE loginId = ?)";
-
-		return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, loginId));
-	}
-
-	public void updatePassword(long id, String password) {
-		// UPDATE {table} SET {column} = {value}, {column} = {value} WHERE {condition}
-		var sql = "UPDATE MEMBER SET password = ? WHERE id = ?";
-
-		jdbcTemplate.update(sql, password, id);
-	}
-
-	public boolean existsById(long id) {
-		var sql = "SELECT EXISTS (SELECT id FROM MEMBER WHERE id = ?)";
-
-		return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
-	}
-
-	// id값으로 db에 조회해서 User 객체를 반환하는 메서드가 필요
-
-	public Optional<User> selectById(long id) {
-		var sql = "SELECT * FROM MEMBER WHERE id = ?";
-		// ResultSet객체로 반환을 함
-
-		var list = jdbcTemplate.query(sql, rowMapper(), id);
-
-		return list.stream().findFirst();
-	}
-
-	public Pair<List<User>, Long> selectAll(int page, int size, String keyword) {
-		// paging의 구조
-		// 백엔드 입장에서 필요한 것
-		// 한화면에 몇개 보여줄것인가? => limit
-		// 내가 몇번째 페이지를 보고있나? => offset (몇개를 건너뛸것인가?)
-		// 보고있는 페이지 - 1 * limit
-		// 키워드 검색 = LIKE %keyword% (포함) , %keyword(시작하는), keyword%(끝나는)
-		var sql = "SELECT * FROM MEMBER WHERE name LIKE CONCAT('%', ? ,'%') LIMIT ? OFFSET ?";
-
-		var users = jdbcTemplate.query(sql, rowMapper(), keyword, size, page);
-
-		var countSql = "SELECT COUNT(*) FROM MEMBER WHERE name LIKE CONCAT('%', ? ,'%')";
-		var totalElements = jdbcTemplate.queryForObject(countSql, Long.class, keyword);
-
-		return Pair.of(users, totalElements);
-	}
-
-	public void updateById(Long id, String name, String email, String mobile) {
-		var sql = "UPDATE MEMBER SET name = ?, email = ?, mobile = ?, updatedAt = ? WHERE id = ?";
-
-		jdbcTemplate.update(sql, name, email, mobile, LocalDateTime.now(), id);
-	}
-
-	private RowMapper<User> rowMapper() {
-		return (rs, rowNum) -> mapToUser(rs);
-		// () -> {} 람다는 단일 실행문이면 {} 와 return 생략이 가능하다
-	}
-
-	private User mapToUser(ResultSet rs) throws SQLException {
-		System.out.println("mapToUser called");
-		return new User(
-			rs.getLong("id"),
-			rs.getString("loginId"),
-			rs.getString("password"),
-			rs.getString("name"),
-			rs.getString("email"),
-			rs.getString("mobile"),
-			Gender.valueOf(rs.getString("gender")),
-			rs.getObject("birthday", LocalDate.class),
-			rs.getObject("createdAt", LocalDateTime.class),
-			rs.getObject("updatedAt", LocalDateTime.class)
-		);
-	}
+	@Query("""
+	SELECT exists (SELECT u FROM User u WHERE u.loginId = ?1)
+""")
+	Boolean existsByLoginIdJPQL(String loginId);
 }
