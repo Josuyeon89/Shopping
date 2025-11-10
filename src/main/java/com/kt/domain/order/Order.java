@@ -20,12 +20,12 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 	private LocalDateTime deliveredAt;
-
 	// 연관관계
 	// 주문 <-> 회원
 	// N : 1 => 다대일
 	// ManyToOne
 	// FK => 많은 쪽에 생김
+    //
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
