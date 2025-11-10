@@ -15,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
 // 2. 굳이? 같이쓰지뭐
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 	private String loginId;
 	private String password;
@@ -52,7 +55,7 @@ public class User extends BaseEntity {
 		this.updatedAt = updatedAt;
 	}
 
-	public void changePassword(String password) {
+    public void changePassword(String password) {
 		this.password = password;
 	}
 

@@ -8,10 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.domain.user.User;
-import com.kt.dto.UserCreateRequest;
+import com.kt.dto.user.UserCreateRequest;
 import com.kt.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+
+// 구현체가 하나 이상 필요로 해야 인터페이스가 의미가 있다
+// 인터페이스 : 구현체 1:1로 다 나눠야함?
+// 관례를 지키려고 추상화를 굳이 하는 것을 관습적 추상화 -> 굳이~
+// -> 필요한 곳에서만 추상화 하자
 
 @Service
 @RequiredArgsConstructor

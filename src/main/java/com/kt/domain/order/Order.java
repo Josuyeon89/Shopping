@@ -8,22 +8,15 @@ import com.kt.common.BaseEntity;
 import com.kt.domain.orderproduct.OrderProduct;
 import com.kt.domain.user.User;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
-	private String receiverName;
-	private String receiverAddress;
-	private String receiverMobile;
+    @Embedded
+    private Receiver receiver;
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 	private LocalDateTime deliveredAt;

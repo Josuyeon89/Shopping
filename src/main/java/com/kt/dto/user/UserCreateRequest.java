@@ -1,4 +1,4 @@
-package com.kt.dto;
+package com.kt.dto.user;
 
 import java.time.LocalDate;
 
@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 // bean validation이라는 기능을 통해서 유효성 검사
+// DTO (Data Transfer Object) : 계층 간에 데이터를 전달해주는 객체
 public record UserCreateRequest(
 	@NotBlank
 	String loginId,

@@ -10,19 +10,57 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
 	private String name;
 	private Long price;
 	private Long stock;
 	@Enumerated(EnumType.STRING)
-	private ProductStatus status;
+	private ProductStatus status = ProductStatus.ACTIVED;
 
 	@OneToMany(mappedBy = "product")
 	private List<OrderProduct> orderProducts = new ArrayList<>();
+
+    public Product(String name, Long price, Long stock) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    public void update (String name, Long price, Long stock) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    public void soldOut() {
+        this.status = ProductStatus.SOLD_OUT;
+    }
+
+    public void inActivated() {
+        this.status = ProductStatus.IN_ACTIVED;
+    }
+
+    public void activated() {
+        this.status = ProductStatus.ACTIVED;
+    }
+
+    public void deleted() {
+        this.status = ProductStatus.DELETED;
+    }
+
+    public void decreaseStock(Long quantity) {
+        this.stock-= quantity;
+    }
+    public void increaseStock(Long quantity) {
+        this.stock -= quantity;
+    }
 
 	//생성
 	//수정
