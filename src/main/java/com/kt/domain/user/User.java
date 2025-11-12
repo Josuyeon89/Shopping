@@ -1,30 +1,24 @@
 package com.kt.domain.user;
 
+import com.kt.common.BaseEntity;
+import com.kt.domain.order.Order;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kt.common.BaseEntity;
-import com.kt.domain.order.Order;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 // 1. domain과 entity를 분리해야
 // 2. 굳이? 같이쓰지뭐
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class User extends BaseEntity {
 	private String loginId;
 	private String password;
@@ -36,9 +30,11 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	private LocalDate birthday;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 	@OneToMany(mappedBy = "user")
-	private List<Order> orders = new ArrayList<>();
+	private final List<Order> orders = new ArrayList<>();
 
 
 
@@ -54,6 +50,9 @@ public class User extends BaseEntity {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
+
+    // 정적 팩토리 메서드 패턴 사용 -> 왜? User 생성자 이름이 Role이 Admin인 User인지 Role이 User인 User인지 구분하기 위해
+    // public static User normalUser ()
 
     public void changePassword(String password) {
 		this.password = password;

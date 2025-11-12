@@ -46,11 +46,11 @@ public class SecurityConfiguration {
         ).authorizeHttpRequests(
                 request ->
                 {
-                    request.requestMatchers(HttpMethod.GET, "1", "2").permitAll();
-                    request.requestMatchers(HttpMethod.POST, "1", "2").permitAll();
-                    request.requestMatchers(HttpMethod.PATCH, "1", "2").permitAll();
-                    request.requestMatchers(HttpMethod.PUT, "1", "2").permitAll();
-                    request.requestMatchers(HttpMethod.DELETE, "1", "2").permitAll();
+                    request.requestMatchers(HttpMethod.GET, GET_PERMIT_ALL).permitAll();
+                    request.requestMatchers(HttpMethod.POST, POST_PERMIT_ALL).permitAll();
+                    request.requestMatchers(HttpMethod.PATCH,PATCH_PERMIT_ALL).permitAll();
+                    request.requestMatchers(HttpMethod.PUT, PUT_PERMIT_ALL).permitAll();
+                    request.requestMatchers(HttpMethod.DELETE, DELETE_PERMIT_ALL).permitAll();
                 }
                 ).authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable);

@@ -10,13 +10,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Product extends BaseEntity {
 	private String name;
 	private Long price;
@@ -25,7 +24,7 @@ public class Product extends BaseEntity {
 	private ProductStatus status = ProductStatus.ACTIVED;
 
 	@OneToMany(mappedBy = "product")
-	private List<OrderProduct> orderProducts = new ArrayList<>();
+	private final List<OrderProduct> orderProducts = new ArrayList<>();
 
     public Product(String name, Long price, Long stock) {
         this.name = name;
@@ -60,6 +59,14 @@ public class Product extends BaseEntity {
     }
     public void increaseStock(Long quantity) {
         this.stock -= quantity;
+    }
+
+    public boolean canProvide(Long quantity) {
+        return this.stock >= quantity;
+    }
+
+    public void mapToOrderProduct(OrderProduct orderProduct) {
+        this.orderProducts.add(orderProduct);
     }
 
 	//생성

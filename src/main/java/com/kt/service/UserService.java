@@ -2,6 +2,8 @@ package com.kt.service;
 
 import java.time.LocalDateTime;
 
+import com.kt.common.ErrorCode;
+import com.kt.common.Preconditions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.domain.user.User;
 import com.kt.dto.user.UserCreateRequest;
-import com.kt.repository.UserRepository;
+import com.kt.repository.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,17 +51,12 @@ public class UserService {
 	}
 
 	public void changePassword(Long id, String oldPassword, String password) {
-		var user = userRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+		var user = userRepository.findByIdOrThrow(id, ErrorCode.NOT_FOUND_USER);
 
-		if(!user.getPassword().equals(oldPassword)) {
-			throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
-		}
+        Preconditions.vaildate(user.getPassword().equals(oldPassword), ErrorCode.DOES_NOT_MATCH_OLD_PASSWORD);  // 설정한 비번이 이전 비번과 같지 않을 때 -> DOES_NOT_MATCH_OLD_PASSWORD 가 떠야한다.
+        // vaildate에서 앞의 조건이 맞지 않을 때 뒤의 조건 실행됨
 
-		if(oldPassword.equals(password)) {
-			throw new IllegalArgumentException("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
-		}
-
+        Preconditions.vaildate(!oldPassword.equals(password), ErrorCode.CAN_NOT_ALLOWED_SAME_PASSWORD);
 		user.changePassword(password);
 	}
 
@@ -69,13 +66,11 @@ public class UserService {
 	}
 
 	public User detail(Long id) {
-		return userRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+		return userRepository.findByIdOrThrow(id, ErrorCode.NOT_FOUND_USER);
 	}
 
 	public void update(Long id, String name, String email, String mobile) {
-		var user = userRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+		var user = userRepository.findByIdOrThrow(id, ErrorCode.NOT_FOUND_USER);
 
 		user.update(name, email, mobile);
 	}
