@@ -36,10 +36,8 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private final List<Order> orders = new ArrayList<>();
 
-
-
 	public User(String loginId, String password, String name, String email, String mobile, Gender gender,
-		LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt, Role role) {
 		this.loginId = loginId;
 		this.password = password;
 		this.name = name;
@@ -52,7 +50,36 @@ public class User extends BaseEntity {
 	}
 
     // 정적 팩토리 메서드 패턴 사용 -> 왜? User 생성자 이름이 Role이 Admin인 User인지 Role이 User인 User인지 구분하기 위해
-    // public static User normalUser ()
+    public static User normalUser (String loginId, String password, String name, String email, String mobile, Gender gender,
+                                   LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new User(
+                loginId,
+                password,
+                name,
+                email,
+                mobile,
+                gender,
+                birthday,
+                createdAt,
+                updatedAt,
+                Role.USER
+        );
+    }
+
+    public static User admin(String loginId, String password, String name, String email, String mobile, Gender gender,
+                             LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return User.admin(
+                loginId,
+                password,
+                name,
+                email,
+                mobile,
+                gender,
+                birthday,
+                createdAt,
+                updatedAt
+        );
+    }
 
     public void changePassword(String password) {
 		this.password = password;
