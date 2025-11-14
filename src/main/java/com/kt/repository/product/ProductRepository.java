@@ -5,9 +5,13 @@ import com.kt.common.ErrorCode;
 import com.kt.domain.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     default Product findByIdOrThrow(Long id) {
         return findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
     }
+
+    Optional<Product> findByName(String name);
 }
