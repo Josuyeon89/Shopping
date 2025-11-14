@@ -12,7 +12,9 @@ public enum ErrorCode {
     DOES_NOT_MATCH_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "기존 비밀번호가 일치하지 않습니다."),
     CAN_NOT_ALLOWED_SAME_PASSWORD(HttpStatus.BAD_REQUEST, "기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다."),
     NOT_ENOUGH_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족합니다."),
-    INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "qmffkqmffk");
+    INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "qmffkqmffk"),
+    FAIL_ACQUIRED_LOCK(HttpStatus.BAD_REQUEST, "다른 사용자가 재고를 수정중입니다. 잠시 후 다시 시도해주세요"),
+    ERROR_SYSTEM(HttpStatus.BAD_REQUEST, "500 error");
 
     private final HttpStatus status;
     private final String message;
