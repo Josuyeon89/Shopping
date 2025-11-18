@@ -80,4 +80,14 @@ class ProductTest {
                 10L
         ));
     }
+
+    @Test
+    void 상품_생성_실패__가격이_null() {
+        assertThrowsExactly(IllegalArgumentException.class, () ->
+                new Product(
+                        "테스트 상품명",
+                        null,
+                        10L
+                ));
+    }
 }

@@ -7,8 +7,6 @@ import jakarta.validation.constraints.NotNull;
 public interface OrderRequest {
     record Creat (
             @NotNull
-            Long userId,
-            @NotNull
             Long productId,
             @NotNull
             @Min(1)
