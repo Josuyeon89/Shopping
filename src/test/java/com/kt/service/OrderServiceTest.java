@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,9 +60,10 @@ class OrderServiceTest {
     }
 
     @Test
+    @Transactional
     void 주문_생성 () {
         // given
-        var user = userRepository.save(
+        User user = userRepository.save(
                 new User(
                         "testuser",
                         "password",
@@ -102,7 +105,7 @@ class OrderServiceTest {
 
     @Test
     void 동시에_100명_주문 () throws InterruptedException {
-        var userList = new ArrayList<User>();
+        ArrayList<User> userList = new ArrayList<User>();
         for(int i=0 ; i<100 ; i++){
             userList.add(new User(
                     "testuser"+i,
@@ -128,11 +131,13 @@ class OrderServiceTest {
         productRepository.flush();
 
         // 동시 주문위해 쓰레드 100개
-        var executorService = Executors.newFixedThreadPool(100);
-        var countDownLatch = new CountDownLatch(100);
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        CountDownLatch countDownLatch = new CountDownLatch(100);   //100개의 작업이 끝날때까지 기다림
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger failCount = new AtomicInteger(0);
 
+
+        // 100명의 유저가 동시에 같은 상품을 1개씩 주문 시도
         for(int i=0 ; i<100 ; i++){
             int finalI = i;
             executorService.submit(() -> {
@@ -159,10 +164,27 @@ class OrderServiceTest {
         countDownLatch.await();
         executorService.shutdown();
 
-        var foundedProduct = productRepository.findByIdOrThrow(product.getId());
+        Product foundedProduct = productRepository.findByIdOrThrow(product.getId());
 
         System.out.println("성공한 주문 수 :"+successCount.get());
         System.out.println("실패한 주문 수 :"+failCount.get());
         System.out.println("남은 재고 수 : "+foundedProduct.getStock());
+
+        // 추가 테스트
+        assertThat(successCount.get())
+                .as("재고 10개이므로 성공 주문 수는 10이어야 한다")
+                .isEqualTo(10);
+
+        assertThat(failCount.get())
+                .as("나머지 90명은 실패해야 한다")
+                .isEqualTo(90);
+
+        assertThat(foundedProduct.getStock())
+                .as("모든 재고가 소진되어야 한다")
+                .isEqualTo(0L);
+
+        assertThat(orderRepository.count())
+                .as("실제 생성된 주문 개수도 성공 건수와 같아야 한다")
+                .isEqualTo(10L);
     }
 }

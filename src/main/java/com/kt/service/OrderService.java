@@ -50,7 +50,6 @@ public class OrderService {
 
         Product product = productRepository.findByIdPessimistic(productId).orElseThrow();
 
-
         Preconditions.vaildate(product.canProvide(quantity), ErrorCode.NOT_ENOUGH_STOCK);
 
         User user = userRepository.findByIdOrThrow(userId, ErrorCode.NOT_FOUND_USER);
@@ -67,12 +66,12 @@ public class OrderService {
         product.mapToOrderProduct(orderProduct);
         order.mapToOrderProduct(orderProduct);
 
-        rLock.unlock();
         } catch (InterruptedException e) {
             throw new CustomException(ErrorCode.ERROR_SYSTEM);
-        } finally{
-            rLock.unlock();
+        } finally{      // try catch를 지난 뒤 lock이 걸려있다면 풀어주고 걸려있지 않았다면 넘어가도록
+            if (rLock.isHeldByCurrentThread()) {
+                rLock.unlock();
+            }
         }
-
     }
 }
