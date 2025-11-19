@@ -15,7 +15,7 @@ public class RedisConfiguration {
     private final RedisProperties redisProperties;
     // redisson 에서 분산락 동작은
     // DB에 접근하기 전 락을 획득하고 redis<key, value>에 저장
-    // 직압 스헹
+    // 직압 수헹
     // 끝나면 락 해제 redis에서 삭제
     // redis는 만료시간을 설정할 수 있음
     @Bean

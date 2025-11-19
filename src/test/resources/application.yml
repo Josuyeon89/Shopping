@@ -4,6 +4,8 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 1000
   jpa:
     hibernate:
       #create = 테이블을 만들기만
@@ -20,3 +22,7 @@ spring:
           time_zone: Asia/Seoul
         show_sql: true #로컬에서만
     show-sql: true
+  data:
+    redis:
+      host: ${redis.host:localhost}
+      port: ${redis.port:6379}

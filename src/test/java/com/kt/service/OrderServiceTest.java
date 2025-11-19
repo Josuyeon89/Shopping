@@ -9,6 +9,7 @@ import com.kt.repository.order.OrderRepository;
 import com.kt.repository.orderproduct.OrderProductRepository;
 import com.kt.repository.product.ProductRepository;
 import com.kt.repository.user.UserRepository;
+import com.kt.service.order.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,8 +106,9 @@ class OrderServiceTest {
 
     @Test
     void 동시에_100명_주문 () throws InterruptedException {
+        int repeatCount = 500;
         ArrayList<User> userList = new ArrayList<User>();
-        for(int i=0 ; i<100 ; i++){
+        for(int i=0 ; i<repeatCount ; i++){
             userList.add(new User(
                     "testuser"+i,
                     "password",
@@ -132,13 +134,13 @@ class OrderServiceTest {
 
         // 동시 주문위해 쓰레드 100개
         ExecutorService executorService = Executors.newFixedThreadPool(100);
-        CountDownLatch countDownLatch = new CountDownLatch(100);   //100개의 작업이 끝날때까지 기다림
+        CountDownLatch countDownLatch = new CountDownLatch(repeatCount);   //100개의 작업이 끝날때까지 기다림
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger failCount = new AtomicInteger(0);
 
 
         // 100명의 유저가 동시에 같은 상품을 1개씩 주문 시도
-        for(int i=0 ; i<100 ; i++){
+        for(int i=0 ; i<repeatCount ; i++){
             int finalI = i;
             executorService.submit(() -> {
                 try {
@@ -177,7 +179,7 @@ class OrderServiceTest {
 
         assertThat(failCount.get())
                 .as("나머지 90명은 실패해야 한다")
-                .isEqualTo(90);
+                .isEqualTo(490);
 
         assertThat(foundedProduct.getStock())
                 .as("모든 재고가 소진되어야 한다")
