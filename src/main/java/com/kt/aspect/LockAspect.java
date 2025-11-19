@@ -29,8 +29,9 @@ public class LockAspect {
     @Around("@annotation(com.kt.common.Lock) && @annotation(lock)")
     public Object lock(ProceedingJoinPoint joinPoint, Lock lock) throws Throwable {
         Object[] args = joinPoint.getArgs();
-        Long productId = (Long) args[1];
-        String key = String.format("%s:%d", lock.key().name().toLowerCase(), productId);
+
+        Long identity = (Long) args[lock.index()];  // 어떤 인자로 락을 걸 지 지정
+        String key = String.format("%s:%d", lock.key().name().toLowerCase(), identity);
 
         RLock rLock = redissonClient.getLock(key);
 

@@ -27,7 +27,7 @@ public class OrderService {
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
 
-    @Lock(key = Lock.Key.STOCK)
+    @Lock(key = Lock.Key.STOCK, index = 1)  // index가 1이라는 뜻은 productId를 락 키로 사용한다는 뜻
     public void create(
             Long userId,
             Long productId,
