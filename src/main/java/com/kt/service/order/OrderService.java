@@ -1,4 +1,4 @@
-package com.kt.service;
+package com.kt.service.order;
 
 import com.kt.common.ErrorCode;
 import com.kt.common.Lock;

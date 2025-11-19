@@ -3,7 +3,7 @@ package com.kt.controller.order;
 import com.kt.common.ApiResult;
 import com.kt.dto.order.OrderRequest;
 import com.kt.security.CurrentUser;
-import com.kt.service.OrderService;
+import com.kt.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

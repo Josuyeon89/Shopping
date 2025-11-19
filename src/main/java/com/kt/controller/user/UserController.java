@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kt.dto.user.UserCreateRequest;
 import com.kt.dto.user.UserUpdatePasswordRequest;
-import com.kt.service.UserService;
+import com.kt.service.user.UserService;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

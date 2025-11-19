@@ -1,4 +1,4 @@
-package com.kt.service;
+package com.kt.service.user;
 
 import java.time.LocalDateTime;
 

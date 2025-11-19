@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kt.domain.user.User;
 import com.kt.dto.user.UserUpdateRequest;
-import com.kt.service.UserService;
+import com.kt.service.user.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

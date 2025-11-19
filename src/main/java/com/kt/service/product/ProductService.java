@@ -1,4 +1,4 @@
-package com.kt.service;
+package com.kt.service.product;
 
 import com.kt.domain.product.Product;
 import com.kt.repository.product.ProductRepository;
