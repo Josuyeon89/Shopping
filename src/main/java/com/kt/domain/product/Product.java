@@ -60,9 +60,9 @@ public class Product extends BaseEntity {   //POJO임 -> Component가 없다. (E
 	private final List<OrderProduct> orderProducts = new ArrayList<>();
 
     public Product(String name, Long price, Long stock) {
-        Preconditions.vaildate(Strings.isNotBlank(name), ErrorCode.INVALID_PARAMETER);
-        Preconditions.vaildate(price>=0, ErrorCode.INVALID_PARAMETER);
-        Preconditions.vaildate(stock>=0, ErrorCode.INVALID_PARAMETER);
+        Preconditions.validate(Strings.isNotBlank(name), ErrorCode.INVALID_PARAMETER);
+        Preconditions.validate(price>=0, ErrorCode.INVALID_PARAMETER);
+        Preconditions.validate(stock>=0, ErrorCode.INVALID_PARAMETER);
 
         this.name = name;
         this.price = price;
