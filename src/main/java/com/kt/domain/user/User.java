@@ -47,6 +47,7 @@ public class User extends BaseEntity {
 		this.birthday = birthday;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+        this.role = role;
 	}
 
     // 정적 팩토리 메서드 패턴 사용 -> 왜? User 생성자 이름이 Role이 Admin인 User인지 Role이 User인 User인지 구분하기 위해
@@ -68,7 +69,7 @@ public class User extends BaseEntity {
 
     public static User admin(String loginId, String password, String name, String email, String mobile, Gender gender,
                              LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return User.admin(
+        return new User(
                 loginId,
                 password,
                 name,
@@ -77,7 +78,8 @@ public class User extends BaseEntity {
                 gender,
                 birthday,
                 createdAt,
-                updatedAt
+                updatedAt,
+                Role.ADMIN
         );
     }
 

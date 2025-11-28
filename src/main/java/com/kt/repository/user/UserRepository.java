@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.kt.domain.user.User;
 
+import java.util.Optional;
+
 // <T, ID>
 // T: Entity 클래스 => User
 // ID: Entity 클래스의 PK 타입 => Long
@@ -25,6 +27,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	SELECT exists (SELECT u FROM User u WHERE u.loginId = ?1)
 """)
     Boolean existsByLoginIdJPQL(String loginId);
+
+    Optional<User> findByLoginId(String loginId);   // optional이 유저를 찾지 못했을 경우를 대비해줌
 
     Page<User> findAllByNameContaining(String name, Pageable pageable);
 

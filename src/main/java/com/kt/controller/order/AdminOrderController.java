@@ -3,7 +3,7 @@ package com.kt.controller.order;
 import com.kt.common.ApiResult;
 import com.kt.common.Paging;
 import com.kt.dto.order.OrderResponse;
-import com.kt.repository.order.OrderRepository;
+import com.kt.repository.order.OrderRepositoryCustom;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AdminOrderController {
 
-    private final OrderRepository orderRepository;
+    private final OrderRepositoryCustom orderRepository;
 
     @GetMapping
     public ApiResult<Page<OrderResponse.Search>> search (

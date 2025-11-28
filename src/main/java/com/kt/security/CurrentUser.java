@@ -1,19 +1,13 @@
 package com.kt.security;
 
-import lombok.Getter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+public interface CurrentUser {
 
-import java.util.Collection;
-
-@Getter
-public class CurrentUser extends User {
-
-    private Long id;
+    Long getId();
+    String getLoginId();
 
 
-    public CurrentUser(String username, String password,
-                       Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
-    }
+//    public CurrentUser(String username, String password,
+//                       Collection<? extends GrantedAuthority> authorities) {
+//        super(username, password, authorities);
+//    }
 }

@@ -1,6 +1,8 @@
 package com.kt.common.config;
 
 
+import com.kt.security.JwtFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,17 +16,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
     // 시큐리티 시스템을 이용해 보안을 구축할 때 패스워드를 저장하려면 암호화 해야함
     // bcrypt 단방향 해시 암호화
     // 평문 -> 5번 해싱해서 랜덤 값 저장 -> 비교할때는 5번 해싱해서 같은 지 비교
 
-    private static final String[] GET_PERMIT_ALL = {"/api/v1/public/**"};
-    private static final String[] POST_PERMIT_ALL = {"/api/v1/public/**"};
+    private final JwtFilter jwtFilter;
+
+
+    private static final String[] GET_PERMIT_ALL = {"/api/health/**", "/swagger-ui/**", "/v3/api-docs/**"};
+    private static final String[] POST_PERMIT_ALL = {"/users", "/auth/login"};
     private static final String[] PUT_PERMIT_ALL = {"/api/v1/public/**"};
     private static final String[] PATCH_PERMIT_ALL = {"/api/v1/public/**"};
     private static final String[] DELETE_PERMIT_ALL = {"/api/v1/public/**"};
@@ -51,8 +58,9 @@ public class SecurityConfiguration {
                     request.requestMatchers(HttpMethod.PATCH,PATCH_PERMIT_ALL).permitAll();
                     request.requestMatchers(HttpMethod.PUT, PUT_PERMIT_ALL).permitAll();
                     request.requestMatchers(HttpMethod.DELETE, DELETE_PERMIT_ALL).permitAll();
+                    request.anyRequest().authenticated();
                 }
-                ).authorizeHttpRequests(request -> request.anyRequest().authenticated())
+                ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

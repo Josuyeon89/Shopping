@@ -3,6 +3,7 @@ package com.kt.controller.order;
 import com.kt.common.ApiResult;
 import com.kt.dto.order.OrderRequest;
 import com.kt.security.CurrentUser;
+import com.kt.security.DefaultCurrentUser;
 import com.kt.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     private final OrderService orderService;
 
-
     @PostMapping
-    public ApiResult<Void> create (@AuthenticationPrincipal CurrentUser currentUser,
+    public ApiResult<Void> create (@AuthenticationPrincipal DefaultCurrentUser defaultCurrentUser,
                                    @RequestBody @Valid OrderRequest.Creat orderRequest) {
         orderService.create(
-                currentUser.getId(),
+                defaultCurrentUser.getId(),
                 orderRequest.productId(),
                 orderRequest.receiverName(),
                 orderRequest.receiverAddress(),

@@ -6,6 +6,7 @@ import com.kt.common.ErrorCode;
 import com.kt.common.Preconditions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +27,15 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	// private final UserJDBCRepository userJDBCRepository; 추억속으로
 	private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 	// 트랜잭션 처리해줘
 	// PSA - Portable Service Abstraction
 	// 환경설정을 살짝 바꿔서 일관된 서비스를 제공하는 것
 	public void create(UserCreateRequest request) {
-			var newUser = new User(
+			var newUser = User.normalUser(
 				request.loginId(),
-				request.password(),
+                passwordEncoder.encode(request.password()),
 				request.name(),
 				request.email(),
 				request.mobile(),
@@ -41,7 +43,7 @@ public class UserService {
 				request.birthday(),
 				LocalDateTime.now(),
 				LocalDateTime.now()
-			);
+            );
 
 			userRepository.save(newUser);
 	}
@@ -53,10 +55,10 @@ public class UserService {
 	public void changePassword(Long id, String oldPassword, String password) {
 		var user = userRepository.findByIdOrThrow(id, ErrorCode.NOT_FOUND_USER);
 
-        Preconditions.vaildate(user.getPassword().equals(oldPassword), ErrorCode.DOES_NOT_MATCH_OLD_PASSWORD);  // 설정한 비번이 이전 비번과 같지 않을 때 -> DOES_NOT_MATCH_OLD_PASSWORD 가 떠야한다.
-        // vaildate에서 앞의 조건이 맞지 않을 때 뒤의 조건 실행됨
+        Preconditions.validate(user.getPassword().equals(oldPassword), ErrorCode.DOES_NOT_MATCH_OLD_PASSWORD);  // 설정한 비번이 이전 비번과 같지 않을 때 -> DOES_NOT_MATCH_OLD_PASSWORD 가 떠야한다.
+        // validate();에서 앞의 조건이 맞지 않을 때 뒤의 조건 실행됨
 
-        Preconditions.vaildate(!oldPassword.equals(password), ErrorCode.CAN_NOT_ALLOWED_SAME_PASSWORD);
+        Preconditions.validate(!oldPassword.equals(password), ErrorCode.CAN_NOT_ALLOWED_SAME_PASSWORD);
 		user.changePassword(password);
 	}
 
