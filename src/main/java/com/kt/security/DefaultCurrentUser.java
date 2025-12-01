@@ -41,6 +41,4 @@ public class DefaultCurrentUser implements UserDetails, CurrentUser {
     public String getUsername() {
         return id.toString();
     }
-
-
 }
